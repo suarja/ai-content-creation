@@ -1,0 +1,22 @@
+{
+  "name": "ai-content-creation",
+  "interface": {
+    "displayName": "AI Content Creation"
+  },
+  "plugins": [
+    {
+      "name": "explainer-motion",
+      "version": "0.1.0",
+      "source": {
+        "source": "local",
+        "path": "./plugins/explainer-motion"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools",
+      "description": "Make vertical faceless explainer and app-promo videos: a mascot sticker that changes pose on every phrase, word-by-word captions and UI cards synced to a voice-over (own voice, local VoiceStudio clone or ElevenLabs), rendered from HTML with HyperFrames."
+    }
+  ]
+}
