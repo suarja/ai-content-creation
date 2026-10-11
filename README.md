@@ -27,3 +27,7 @@ codex plugin add explainer-motion@ai-content-creation
 ```
 
 Then ask your agent for what you want to make; the plugin's skills take it from there.
+
+## License
+
+MIT — see [LICENSE](./LICENSE).
