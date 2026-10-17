@@ -1,12 +1,12 @@
 ---
 name: explainer-voiceover
-description: Produce the voice-over of a mascot explainer video and its word-level timings — from the user's own recording, a free local voice clone in VoiceStudio, ElevenLabs, or a macOS placeholder — then check it says the script. Use when an explainer-video-pipeline project needs its narration, when the user wants to clone their voice, change provider, fix a mispronounced name, or speed the delivery up.
+description: Produce the voice-over of a mascot explainer video and its word-level timings — from the user's own recording, a free local voice clone in VoiceStudio, ElevenLabs, or a macOS placeholder — then check it says the script. Use when an explainer-video-pipeline project needs its narration, when the user wants to clone their voice, change provider, fix a mispronounced name, or speed the delivery up, when a cloned voice rushes or drags between sentences (generate it line by line), when the voice must match the author's real pauses, or when the clone sounds worse than the author and must be improved.
 ---
 
 # Voice-over
 
 Every provider writes `voice/narration.wav`, then the same step transcribes it word by
-word (`voice/transcript.json`) and compares it with `script.txt`. The video build only
+word (voice/transcript.json) and compares it with script.txt. The video build only
 reads those two files, so changing provider never touches the beats.
 
 ```bash
@@ -26,7 +26,7 @@ Clone only a voice the user owns or has permission to use.
 
 ## recording
 
-Ask for one read of `script.txt` in a quiet room, phone or USB mic 15–20 cm away, a
+Ask for one read of script.txt in a quiet room, phone or USB mic 15–20 cm away, a
 bit faster and more energetic than conversation. Then:
 
 ```bash
@@ -43,7 +43,7 @@ Setup, once (the user's machine, with their consent for each download):
 
 1. Download `VoiceStudio-Electron-<version>-mac-arm64.dmg` from
    github.com/debpalash/VoiceStudio/releases (≈ 250 MB), compare its SHA-256 with the
-   release's `SHA256SUMS.txt`, copy `VoiceStudio.app` to `/Applications`. It is not
+   release's SHA256SUMS.txt, copy `VoiceStudio.app` to `/Applications`. It is not
    notarised: first launch is right-click → Open. Leave the analytics prompt to them.
 2. In the app, accept the clone model install (OmniVoice, ≈ 2.4 GB; ≈ 10 GB in all
    with its Python runtime). Intel Macs cannot run the backend.
@@ -53,7 +53,7 @@ Setup, once (the user's machine, with their consent for each download):
 Generate:
 
 ```bash
-python3 -I voice.py voicestudio <project> --profile "My voice" [--speed 1.1]
+python3 -I voice.py voicestudio <project> --profile "Jason 1" [--speed 1.1]
 ```
 
 The backend listens on `http://127.0.0.1:3900`. The engine keeps at most ~20 s of
@@ -70,10 +70,89 @@ candidate windows; when the report is above ~10 % or the pace drags, retry with
 another one:
 
 ```bash
-python3 -I voice.py voicestudio <project> --profile "My voice" --ref-start 34.5 --ref-end 47.4
+python3 -I voice.py voicestudio <project> --profile "Jason 1" --ref-start 34.5 --ref-end 47.4
 ```
 
 Pick a sentence said in one breath, with no restart or hesitation.
+
+### Line by line (natural prosody)
+
+A clone asked for the whole script in one request chains some sentences without a
+breath and drags others. The owner heard it at once: « ça se bouscule ». Generate one
+request per script line instead, trim each line's silence, and join them with even
+pauses:
+
+```bash
+python3 -I voice.py voicestudio <project> --profile "Jason 1" --ref-start 34.5 --ref-end 47.4   # once: writes the reference
+python3 -I <skill>/scripts/voice_by_line.py <project> --ref-start 34.5 --ref-end 47.4 --speed 1.12 --pause 0.24 --short 0.14
+python3 -I voice.py transcribe <project>
+```
+
+- **A script line is a breath group** (2–6 words, see `explainer-script-and-beats`).
+  `--pause` follows a line ending in `. ? ! …`, `--short` any other line.
+- **The pause you hear is longer than the one you set**: each trimmed line keeps about
+  0.08 s of silence before and 0.10 s after. Measured on 11 Oct 2026: set 0.14/0.24,
+  heard a 0.43 s median; the author speaks with 0.16 s pauses. Set the pauses lower
+  rather than tightening the trim, which eats soft first syllables. Second episode,
+  `--speed 1.2 --pause 0.18 --short 0.10`: 164 words/min, 57 pauses/min, 0.33 s median —
+  closer, still slower than the author.
+- **The clone sometimes swallows the start of a very short line** (« Il dit que »
+  vanished twice, with two seeds; « il relit » too). Merge that line with the previous
+  one and regenerate only it: `--only <n>` reuses every other line, so a fix costs one
+  request. After a merge, the line numbers shift: rename the cached line files (voice/lines/NN)
+  to their new numbers before regenerating, or every later line is regenerated.
+- **The clone can also add a word** (« c'est même pas *de* moi qui parle »): a new
+  `--seed` on that line with `--only` fixed it.
+- **Check each line, not only the total**: the report's 15–23 % difference with the
+  script hides which line failed. Transcribe a suspect line's file alone
+  with `npx hyperframes transcribe` (model small, language fr) and read what the clone said.
+  « pose » read back as « pause » is a homophone, not an error.
+- Cost: about 20 s per line, 8–15 min for a 45 s video, against 3 min in one request.
+- Never re-time a single-request voice by cutting inside sentences: a first tool did,
+  the owner heard « des saccades ». Only whole lines move.
+
+### When the clone is not good enough
+
+13 Oct 2026, reverse-engineer episode (51.9 s, line by line, speed 1.2): the owner judged that
+the cloned voice « dessert » the video, and that English terms sounded wrong (« reverse
+engineering » first came out « reverse energy marine »; « ElevenLabs » respelled « Éleveune
+Labs » sounded odd). What the research says (Oct 2026, mostly vendor guides, no French
+benchmark), and what to try, cheapest first:
+
+1. **The author records the line himself.** Best quality, two minutes of work, and the
+   format's own author uses his voice. Mix it: his recording for the hook and the English
+   terms, the clone elsewhere, or his recording for the whole script (`recording` provider).
+2. **A better reference.** Quality depends on the reference clip more than its length: one
+   speaker, no noise or reverb, no leading silence, mono WAV, exact transcript, 10 to 30 s in
+   the energy of the videos (not a calm read). Record a dedicated 30–60 s profile in that tone
+   and test three windows (10, 15, 30 s) on the same two lines before regenerating a script.
+3. **Keep English terms out of the clone.** Write the French form when it exists, or record
+   the term, or test two respellings on that one line with `--only` and transcribe it. Never
+   ship a respelling nobody has listened to.
+4. **Another local model, blind-tested.** Chatterbox Multilingual (MIT, French, runs on Apple
+   MPS, clones from ~10 s) and Qwen3-TTS (lists French, slow on a Mac) are the candidates. Run
+   the same two French lines with the same reference through each, let the owner pick blind.
+5. **Paid**: ElevenLabs Professional Voice Clone (30+ min of audio) is the studio-grade option.
+
+Licence check: OmniVoice, the model behind VoiceStudio, ships weights under CC BY-NC
+(non-commercial). Videos that promote a paid product are commercial use: say so to the owner
+before publishing with it.
+
+### Match the author's timing
+
+Measure the author's real pauses from their published videos, then compare the
+generated voice:
+
+```bash
+yt-dlp -x --audio-format m4a -o "%(upload_date)s-%(id)s.%(ext)s" --write-info-json "https://www.tiktok.com/@<handle>"
+python3 -I <skill>/scripts/speech_timing.py <audio dir> --compare <project>/voice/narration.wav
+```
+
+Ask before downloading (filename, source, size) and keep the audio out of git.
+Speech-to-text word timings cannot measure pauses — Whisper stretches each word over the
+gap after it — so the script uses silence detection on the audio. Videos with music
+under the voice show almost no pause and are reported apart. On @swarecito (73 videos,
+Oct 2026): about 110 short pauses a minute, 0.16 s median, 180 words a minute.
 
 ## elevenlabs
 
@@ -88,16 +167,22 @@ The voice id is in the ElevenLabs voice library (their cloned voice or a stock o
 ## say (placeholder)
 
 ```bash
-python3 -I voice.py say <project> --voice Samantha     # `say -v '?'` lists voices per language
+python3 -I voice.py say <project> --voice Jacques     # `say -v '?'` lists voices per language
 ```
 
 Use it to build and review the video while the real voice is pending.
 
 ## Pronunciation and pace
 
-- A name said wrong by a synthetic voice: add a respelling in `project.json`,
-  `"voice": { "pronounce": { "Nginx": "engine x" } }`. It changes only the text sent to the
+- A name said wrong by a synthetic voice: add a respelling in project.json,
+  `"voice": { "pronounce": { "Presi": "Prési" } }`. It changes only the text sent to the
   voice; captions keep the script's spelling.
+- An English term inside a French voice is read as French: respell it, then listen. Results
+  (13 Oct 2026): « reverse engineering » → « rivers ènedjinirine » gave « reverse energy marine »,
+  « riveurse ènedjiniringue » passed the transcription but still sounded odd to the owner;
+  « ElevenLabs » → « Éleveune Labs » sounded wrong. For an identifier, respell it word by
+  word (« subagentPromptCacheTtl » → « seube agent, prompte cache, T T L »). It stays
+  approximate; put the exact spelling on a card at that moment.
 - Pace: the reference videos run 190–245 words/min. The report prints the rate; use
   `--speed 1.1`–`1.2` (VoiceStudio, ElevenLabs) when it drags.
 

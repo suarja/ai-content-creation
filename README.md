@@ -4,6 +4,9 @@ Agent skills for AI-driven content creation, for Claude Code and Codex. Each plu
 complete, tested workflow you can hand to your coding agent.
 
 ## Plugins
+<!-- omni:plugins -->
+- [explainer-motion](plugins/explainer-motion): Make vertical faceless explainer and app-promo videos: a mascot sticker that changes pose on every phrase, word-by-word captions and UI cards synced to a voice-over (own voice, local VoiceStudio clone or ElevenLabs), rendered from HTML with HyperFrames.
+<!-- /omni:plugins -->
 
 ### [explainer-motion](./plugins/explainer-motion) — mascot explainer videos
 
