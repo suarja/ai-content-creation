@@ -4,7 +4,7 @@ This plugin is a published copy from the author's private workshop marketplace.
 
 - Source repository: suarja/claude-plugins (private)
 - Source path: packages/explainer-motion
-- Source commit: 4c9edf664112dc651f6f1fac88538834305772b3
+- Source commit: 8c965027a4d848dfdefa8af680eb4f60b8370087
 - Published: 2026-10-17
 
 ## Storefront-only edits
