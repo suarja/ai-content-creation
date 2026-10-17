@@ -13,16 +13,16 @@ format sums up what matters, in order: **subject, hook, rhythm**.
 
 Structure that works for a product:
 
-1. **Hook** (first 2 s): a situation the viewer recognises, or a number. "Tu regardes
-   un débat politique de quarante minutes…"
+1. **Hook** (first 2 s): a situation the viewer recognises, or a number. "You're watching
+   a forty-minute political debate…"
 2. **Pain**: what goes wrong, in their words. One or two lines.
-3. **Reveal**: "Alors on a créé <Product>." — one short line, it gets the title and
+3. **Reveal**: "So we built <Product>." — one short line, it gets the title and
    a background change.
 4. **How it works**: 3–5 lines, one concrete action each (paste the link, get the
    summary, tap a word…). Each line is a card.
 5. **Offer**: the free trial, the price, the first-use gift. One line.
-6. **CTA that asks for a comment**, not a like: "Dis-moi en commentaire quelle vidéo
-   tu veux décoder." Comments feed the algorithm and the next video.
+6. **CTA that asks for a comment**, not a like: "Tell me in the comments which video
+   you want decoded." Comments feed the algorithm and the next video.
 
 Rules:
 
@@ -32,11 +32,13 @@ Rules:
   never heard is a defect.
 - Every claim about the product must be true today. Mark a target ("in a minute")
   as something to verify before publishing.
-- Write numbers in words when the voice must say them ("quarante minutes"); the title
+- Write numbers in words when the voice must say them ("forty minutes"); the title
   can show "40 MIN".
 - Keep the real spelling of the product name: captions print script.txt. If a
   synthetic voice mispronounces it, respell it only in the text sent to the voice
   (see `explainer-voiceover`).
+- Write the script in the language of the video. The examples below are English; the
+  rules hold in any language.
 
 ## Write in the author's voice
 
@@ -45,45 +47,46 @@ is written the way they talk, not the way an assistant writes.
 
 - **Build their bank first**: transcripts of their own videos (`yt-dlp` + `npx hyperframes
   transcribe`, see `explainer-voiceover`), their captions, and their hooks ranked by
-  views. Read it before writing. The owner's bank lives in `contenu/banque/voix/`.
-- **One line = one breath group of 2–6 words**: « Moi ce que je fais, / c'est que je garde
-  / Claude / pour quand je suis bloqué. » The voice is then generated line by line.
-- **First person and a story beat**: « En janvier, j'accusais Claude » beats a stated
+  views. Read it before writing. Keep the bank in the project's content folder, next to
+  the episodes that use it.
+- **One line = one breath group of 2–6 words**: "What I do / is I keep / Claude / for when
+  I'm stuck." The voice is then generated line by line.
+- **First person and a story beat**: "In January, I blamed Claude" beats a stated
   fact. A callback to one of their real past videos is both proof and story.
-- **Their tics, sparingly**: the expressions that recur in their transcripts (« en gros »,
-  « voilà », « soyons honnêtes ») — two or three per video.
-- **Every claim proven**: a personal claim (« je mets /autocompact 400k ») is checked with
+- **Their tics, sparingly**: the expressions that recur in their transcripts ("basically",
+  "so yeah", "let's be honest") — two or three per video.
+- **Every claim proven**: a personal claim ("I set autocompact to 400k") is checked with
   the person before recording.
 
 ## The hook
 
 The first two seconds carry one idea, said like to a friend. Rank the author's own
-hooks by views before writing one: on @swarecito the winners were a curiosity
-(« Tout le monde me demande… », 57 k), a strong promise (« Ce que tu dois absolument
-savoir… », 23 k), a concrete image (« toute ma vie pour le prix d'un café », 8.8 k) or a
-contrarian slogan (« X est mort, vive Y »); the losers started in the middle of an
-explanation (291 views). A descriptive hook (« Tu reprends une conversation de la
-veille ? ») was rejected as « trop descriptif »; « Si tu tapes ta limite sur Claude Code,
-c'est pas Claude. C'est toi. » was accepted. Then pain in their words, then the proof.
+hooks by views before writing one. On one creator account, the winners were a curiosity
+("Everyone keeps asking me…", 57 k), a strong promise ("What you absolutely need to
+know…", 23 k), a concrete image ("my whole life for the price of a coffee", 8.8 k) or a
+contrarian slogan ("X is dead, long live Y"); the losers started in the middle of an
+explanation (291 views). A descriptive hook ("Picking up yesterday's conversation?")
+was rejected as too descriptive; "If you hit your limit on Claude Code, it's not Claude.
+It's you." was accepted. Then pain in their words, then the proof.
 
-Two more refusals on 11 Oct 2026, for the subagent episode:
+Two more refusals from the same author:
 
-- A metaphor the viewer has to decode: « Ton abonnement Claude Code a un trou : tes
-  sous-agents » — « on comprend pas l'histoire du trou, c'est mal amené ».
-- A recap before the subject: « Dans la partie 1, on a parlé du cache » pushed the first
+- A metaphor the viewer has to decode: "Your Claude Code plan has a hole: your
+  subagents" — the author could not follow what the hole was.
+- A recap before the subject: "In part 1, we talked about the cache" pushed the first
   fact to 7 s; cut, the subject arrived at 3.8 s.
 
 When a hook is refused, do not write a third one alone: offer five or six, each built on
-one of the author's winning hooks and named after it (« Ce que tu dois absolument
-savoir… », 23 k), with a recommendation. He picked « Ce que tu dois absolument savoir
-avant de lancer des sous-agents sur Claude Code. ».
+one of the author's winning hooks and named after it ("What you absolutely need to
+know…", 23 k), with a recommendation. The author picked "What you absolutely need to
+know before running subagents on Claude Code."
 
 ## Caption
 
 Write the caption from their own captions: their opening emoji habit, a series marker
-(« Partie 1 | »), one line of promise, the one setting or takeaway, a « abonne-toi pour la
-partie 2 : … » teaser, a question for comments, 4–5 hashtags. Sources go in a pinned
-comment, not the caption.
+("Part 1 |"), one line of promise, the one setting or takeaway, a "follow for part 2: …"
+teaser, a question for comments, 4–5 hashtags. Sources go in a pinned comment, not the
+caption.
 
 ## The beats
 
@@ -93,12 +96,12 @@ seconds: the same beats survive a new voice.
 
 ```json
 [
-  { "at": "Tu regardes", "pose": "ennui", "card": "player", "props": { "tag": "DÉBAT · EN DIRECT", "total": "40:00" } },
-  { "at": "quarante minutes", "title": "<em>40</em> MIN" },
-  { "at": "et à la fin", "pose": "perdu", "card": null },
-  { "at": "créé Presi", "pose": "fier", "title": "PRESI", "bg": "brand" },
-  { "at": "Tu colles", "pose": "telephone", "card": "input", "bg": null, "steps": ["YouTube", "TikTok"],
-    "props": { "label": "LIEN DE LA VIDÉO", "text": "youtube.com/watch?v=débat", "button": "DÉCODER" } }
+  { "at": "You're watching", "pose": "bored", "card": "player", "props": { "tag": "DEBATE · LIVE", "total": "40:00" } },
+  { "at": "forty-minute", "title": "<em>40</em> MIN" },
+  { "at": "and at the end", "pose": "lost", "card": null },
+  { "at": "built Recap", "pose": "proud", "title": "RECAP", "bg": "brand" },
+  { "at": "Paste the link", "pose": "phone", "card": "input", "bg": null, "steps": ["YouTube", "TikTok"],
+    "props": { "label": "VIDEO LINK", "text": "youtube.com/watch?v=debate", "button": "DECODE" } }
 ]
 ```
 
@@ -113,18 +116,18 @@ Rhythm rules, from the reference videos:
 
 - A new pose, card, title or card step at least every ~1–1.5 s. The build prints the
   longest still stretch; above ~2 s add a pose beat or a step.
-- The pose illustrates the words of its phrase, literally: "toi" → pointing at the
-  viewer, "offerte" → holding a gift, "bloque" → confused. If no pose fits, add one
+- The pose illustrates the words of its phrase, literally: "you" → pointing at the
+  viewer, "free" → holding a gift, "stuck" → confused. If no pose fits, add one
   to character/poses.tsv rather than reusing a vague one.
 - Titles only on 2–4 key nouns or numbers per video, ≤ 9 characters. A longer one
-  (« SOUS-AGENTS ») spills over the caption area and was seen as overlapping text.
-- A title needs ~0.8 s on screen too: anchored on a short line, « UN TROU » showed for
+  ("SUBAGENTS") spills over the caption area and was seen as overlapping text.
+- A title needs ~0.8 s on screen too: anchored on a short line, "A HOLE" showed for
   0.55 s and went unseen. Check the beat times in build/timing.json and move the next
   anchor later.
 - One background change, at the reveal.
 - A card needs at least ~0.8 s on screen; shorter, merge it with the next beat.
 - Two titles on back-to-back beats inside one spoken phrase leak the caption under the
-  second title (seen on « Une heure… Cinq minutes », 11 Oct 2026): keep one of them.
+  second title (seen on "One hour… Five minutes"): keep one of them.
 - A title on the `brand` background is drawn in ink on a dark ground and cannot be read;
   keep titles on paper.
 
